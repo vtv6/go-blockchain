@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"log"
+	"strconv"
+)
 
 func main() {
 	bc := NewBlockChain()
@@ -12,6 +15,8 @@ func main() {
 		log.Printf("Prev. hash :%x\n", block.PreBlockHash)
 		log.Printf("Data: %s\n", block.Data)
 		log.Printf("Hash: %x\n", block.Hash)
+		pow := NewProofOfWork(block)
+		log.Printf("PoW: %s\n", strconv.FormatBool(pow.Validate()))
 		log.Println()
 	}
 }
