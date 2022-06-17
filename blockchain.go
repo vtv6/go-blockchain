@@ -29,24 +29,43 @@ type BlockChainIterator struct {
 func (bc *BlockChain) MineBlock(transactions []*Transaction) {
 	var lastHash []byte
 
-	_ = bc.db.View(func(tx *bolt.Tx) error {
+	for _, tx := range transactions {
+		if !bc.VerifyTransaction(tx) {
+			log.Panic("ERROR: Invalid transaction")
+		}
+	}
+
+	err := bc.db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
 		lastHash = b.Get([]byte("l"))
-
 		return nil
 	})
+
+	if err != nil {
+		log.Panic(err)
+	}
 
 	newBlock := NewBlock(transactions, lastHash)
 
-	_ = bc.db.Update(func(tx *bolt.Tx) error {
+	err = bc.db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
-		_ = b.Put(newBlock.Hash, newBlock.Serialize())
-		_ = b.Put([]byte("l"), newBlock.Hash)
+
+		err := b.Put(newBlock.Hash, newBlock.Serialize())
+		if err != nil {
+			log.Panic(err)
+		}
+
+		err = b.Put([]byte("l"), newBlock.Hash)
+		if err != nil {
+			log.Panic(err)
+		}
 
 		bc.tip = newBlock.Hash
-
 		return nil
 	})
+	if err != nil {
+		log.Panic(err)
+	}
 }
 
 func NewGenesisBlock(coinbase *Transaction) *Block {
