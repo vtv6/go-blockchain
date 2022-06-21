@@ -11,7 +11,7 @@
 			"mode": "auto",
 			"program": "${workspaceRoot}",
 			// "args": ["getbalance", "-address", "Tzi"]
-			"args": ["send", "-from", "Tzi", "-to", "Vu", "-amount", "3"]
+			"args": ["send", "-from", "12MAL4xa3L6qSZKnzQiUWm7pKAomnXv6h4", "-to", "1E2JdHJE5sBcW92PZLC7t2UEsmDRVJPLET", "-amount", "1"]
 		}
 	]
 }
